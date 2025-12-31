@@ -1,6 +1,6 @@
 # 🌍 Automated Global Macroeconomic Dashboard
 
-![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
+![Python](https://img.shields.io/badge/Python-3.14+-blue.svg)
 ![Power BI](https://img.shields.io/badge/PowerBI-Dashboard-yellow.svg)
 ![Status](https://img.shields.io/badge/Data-Daily%20Updated-green.svg)
 
