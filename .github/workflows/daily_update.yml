@@ -1,14 +1,15 @@
 name: Daily Macro Data Update
 
-# 設定觸發條件
+# Trigger configuration (觸發設定)
 on:
   schedule:
-    # 每天 UTC 時間 00:00 執行 (台灣時間早上 08:00)
+    # Run daily at 00:00 UTC, which is 08:00 AM Taiwan Time
+    # (每天 UTC 00:00 執行，即台灣時間早上 08:00)
     - cron: '0 0 * * *'
-  workflow_dispatch: # 允許在 GitHub 網頁上手動按按鈕觸發 (方便測試)
+  workflow_dispatch: # Allow manual trigger from GitHub UI for testing (允許手動按鈕觸發)
 
 permissions:
-  contents: write  # ⚠️ 重要：賦予機器人寫入權限，不然無法把 CSV 存回去
+  contents: write  # ⚠️ Important: Grant write permissions to save CSV files back to repo (賦予寫入權限)
 
 jobs:
   update-data:
@@ -21,6 +22,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
+          # Use stable version 3.14 
           python-version: '3.14'
 
       - name: Install dependencies
@@ -29,7 +31,7 @@ jobs:
 
       - name: Run ETL Script
         env:
-          # 從 GitHub Secrets 讀取 API Key
+          # Load API Key from GitHub Secrets (從 Secrets 讀取金鑰)
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: |
           python src/etl_script.py
@@ -39,10 +41,10 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # 檢查有沒有檔案變更
+          # Stage changed CSV files (暫存變更的 CSV 檔)
           git add data/*.csv
           
-          # 如果有變更才 Commit 沒變更就不做動作 (避免報錯)
+          # Commit only if there are changes to avoid errors (若有變更才提交，否則略過)
           git commit -m "📈 Auto-update: Daily macro data refresh" || exit 0
           
           git push
