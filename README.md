@@ -17,39 +17,22 @@ Unlike standard dashboards that only display raw prices, this system integrates 
 The ETL process runs daily via **GitHub Actions**, fetching data from FRED and Yahoo Finance, processing it via **Python**, and feeding a 4-page interactive **Power BI** report.
 
 
+##  Dashboard Previews
+
+| **Page 1: Market Overview** | **Page 2: Fed Policy Monitor** |
+|:---:|:---:|
+| <img src="dashboard/screenshots/market-glance.png" width="400" alt="Market Overview"> | <img src="dashboard/screenshots/environment.png" width="400" alt="Fed Policy"> |
+| *Valuation Heatmaps & Yield Curve* | *Taylor Rule, Real Rates & Liquidity* |
+
+| **Page 3: Business Cycle (Risk)** | **Page 4: Cross-Asset Strategy** |
+|:---:|:---:|
+| <img src="dashboard/screenshots/macro-risk.png" width="400" alt="Risk Monitor"> | <img src="dashboard/screenshots/correlation.png" width="400" alt="Correlations"> |
+| *Leading Economic Indicators (LEI)* | *Copper/Gold Ratio & Global Sentiment* |
+
+> **Note:** For the full interactive experience, please download the `.pbix` file from the [`dashboard/`](dashboard/) folder.
 
 
-## 📂 Project Structure
-
-```text
-├── .github/workflows/
-│   └── daily_update.yml   # CI/CD Automation scripts (Daily Update)
-├── data/                  # Stores processed CSV files (Source for Power BI)
-│   ├── macro_data.csv
-│   └── market_data.csv
-├── dashboard/
-│   ├── Global_Macro.pbix  # Power BI (.pbix) Project File
-│   └── screenshots/       # Images for README
-├── src/
-│   └── etl_script.py      # Python ETL source code
-├── requirements.txt       # Python dependencies
-└── README.md              # Documentation
-```
-
-
-### Automation (CI/CD)
-* **GitHub Actions** runs the ETL script daily.
-* The workflow (`daily_update.yml`) manages Python dependencies, API keys (via Secrets), and auto-commits the new data.
-
-```mermaid
-graph LR
-    A[FRED API] -->|Python| C(Data Processing)
-    B[Yahoo Finance] -->|Python| C
-    C -->|Calculate Taylor Rule/Gaps| D[CSV Storage]
-    D -->|GitHub Actions| E[GitHub Repo]
-    E -->|Web Connector| F[Power BI Dashboard]
-```
-
+---
 
   ## ⚙️ Technical Architecture
 
@@ -82,6 +65,17 @@ The system is fully automated using **GitHub Actions** (`.github/workflows/daily
 * **Auto-Commit**: The workflow automatically pushes updated CSV files back to the repository.
 * **Hosting**: The repo provides raw data access via **GitHub Raw URLs**, effectively acting as a free, high-availability database.
 
+
+```mermaid
+graph LR
+    A[FRED API] -->|Python| C(Data Processing)
+    B[Yahoo Finance] -->|Python| C
+    C -->|Calculate Taylor Rule/Gaps| D[CSV Storage]
+    D -->|GitHub Actions| E[GitHub Repo]
+    E -->|Web Connector| F[Power BI Dashboard]
+```
+
+
 ### 3. Visualization (Power BI)
 * **Data Connection**: Connected via `Web.Contents` to the GitHub Raw CSV URLs. This allows the report to update automatically anywhere with internet access, without needing local file paths.
 * **Data Modeling**:
@@ -90,6 +84,24 @@ The system is fully automated using **GitHub Actions** (`.github/workflows/daily
     * **Dynamic Time Intelligence**: Measures for YTD performance and custom time-frames.
     * **Logic Gates**: `SWITCH` functions to control heatmap coloring (e.g., Green for Growth, Red for Contraction).
 * **UI/UX**: Designed with a "Bloomberg Terminal" aesthetic using a custom JSON theme.
+
+
+## 📂 Project Structure
+
+```text
+├── .github/workflows/
+│   └── daily_update.yml   # CI/CD Automation scripts (Daily Update)
+├── data/                  # Stores processed CSV files (Source for Power BI)
+│   ├── macro_data.csv
+│   └── market_data.csv
+├── dashboard/
+│   ├── Global_Macro.pbix  # Power BI (.pbix) Project File
+│   └── screenshots/       # Images for README
+├── src/
+│   └── etl_script.py      # Python ETL source code
+├── requirements.txt       # Python dependencies
+└── README.md              # Documentation
+```
 
 ---
 
@@ -117,19 +129,6 @@ The system is fully automated using **GitHub Actions** (`.github/workflows/daily
 
 
 
-##  Dashboard Previews
-
-| **Page 1: Market Overview** | **Page 2: Fed Policy Monitor** |
-|:---:|:---:|
-| <img src="dashboard/screenshots/market_overview.png" width="400" alt="Market Overview"> | <img src="dashboard/screenshots/fed_policy.png" width="400" alt="Fed Policy"> |
-| *Valuation Heatmaps & Yield Curve* | *Taylor Rule, Real Rates & Liquidity* |
-
-| **Page 3: Business Cycle (Risk)** | **Page 4: Cross-Asset Strategy** |
-|:---:|:---:|
-| <img src="dashboard/screenshots/risk_monitor.png" width="400" alt="Risk Monitor"> | <img src="dashboard/screenshots/correlation.png" width="400" alt="Correlations"> |
-| *Leading Economic Indicators (LEI)* | *Copper/Gold Ratio & Global Sentiment* |
-
-> **Note:** For the full interactive experience, please download the `.pbix` file from the [`dashboard/`](dashboard/) folder.
 
 ---
 
@@ -217,7 +216,10 @@ Determine if monetary policy is **Restrictive** (slowing growth/recessionary) or
 **Logic:** A gap analysis comparing the *Actual Fed Funds Rate* vs. the *Theoretical "Optimal" Rate* to identify policy errors.
 
 ### **The Formula**
-$$R = \pi + r^* + 0.5(\pi - \pi^*) + 0.5(y - y^*)$$
+$$
+R = \pi + r^{\ast} + 0.5\left(\pi - \pi^{\ast}\right) + 0.5\left(y - y^{\ast}\right)
+$$
+
 
 * **$\pi$ (Inflation):** Core PCE (Personal Consumption Expenditures).
 * **$r^*$ (Neutral Rate):** Assumed real equilibrium interest rate.
