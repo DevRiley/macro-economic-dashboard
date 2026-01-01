@@ -1,13 +1,22 @@
 # 🌍 Automated Global Macroeconomic Dashboard
 
-![Python](https://img.shields.io/badge/Python-3.14+-blue.svg)
-![Power BI](https://img.shields.io/badge/PowerBI-Dashboard-yellow.svg)
-![GitHub Actions](https://img.shields.io/badge/Automation-Daily-2088FF?logo=github-actions&logoColor=white)
-![Domain](https://img.shields.io/badge/Finance-Macro%20Economics-red.svg)
-![License](https://img.shields.io/badge/License-MIT-lightgrey.svg)
+[![Python](https://img.shields.io/badge/Python-3.14+-blue.svg)](https://www.python.org/)
+[![Power BI](https://img.shields.io/badge/PowerBI-Dashboard-F2C811?logo=power-bi&logoColor=black)](https://powerbi.microsoft.com/)
+[![GitHub Actions](https://img.shields.io/badge/Daily_Update-Active-2ea44f?logo=github-actions&logoColor=white)](https://github.com/features/actions)
+[![License](https://img.shields.io/badge/License-MIT-lightgrey.svg)](LICENSE)
 
-> **Live Status**: Data is automatically updated daily at 00:00 UTC via GitHub Actions.
+> **🚀 Live Status**: Data pipeline executed successfully at 00:00 UTC. <p>
+> **🎯 Core Value**: Integrating **Financial Theory** with **Automated Data Engineering**.
 
+<p align="center">
+  <strong>
+    <a href="#-dashboard-previews">📊 View Dashboard Demo</a>
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="src/etl_script.py">🐍 See the Code</a>
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="#-financial-logic--dashboard-architecture">🧠 Read Financial Logic</a>
+  </strong>
+</p>
 
 ## 📖 Project Overview
 This project is an **end-to-end automated data pipeline**  designed to monitor the global economic cycle, assess Federal Reserve policy stance, and identify market inflection points. 
@@ -83,7 +92,7 @@ graph LR
 * **Advanced Analytics (DAX)**:
     * **Dynamic Time Intelligence**: Measures for YTD performance and custom time-frames.
     * **Logic Gates**: `SWITCH` functions to control heatmap coloring (e.g., Green for Growth, Red for Contraction).
-* **UI/UX**: Designed with a "Bloomberg Terminal" aesthetic using a custom JSON theme.
+
 
 
 ## 📂 Project Structure
@@ -226,7 +235,7 @@ $$
 * **$\pi^*$ (Target Inflation):** Fed's target (usually 2%).
 * **$y - y^*$ (Output Gap):** Difference between Real GDP and Potential GDP.
 
-
+* **Methodology:** While the **[Atlanta Fed Taylor Rule Utility](https://www.atlantafed.org/cqer/research/taylor-rule#Tab1)** provides various calculation methods (e.g., using CPI vs. PCE), this dashboard adopts the **Taylor (1993)** specification. It uses **Core PCE** (the Fed's preferred inflation gauge) and the **CBO Output Gap** to ensure the highest policy relevance.
 
 ### **💡 How to Interpret (Policy Gap)**
 * **Accommodative / Loose (Fed Rate < Taylor Rate)**
@@ -235,7 +244,17 @@ $$
 * **Restrictive / Tight (Fed Rate > Taylor Rate)**
     * **Signal:** The Fed is keeping rates higher than what economic conditions suggest.
     * **Risk:** Overtightening leading to a slowdown (Recession Risk).
-
+ 
+```mermaid
+graph TD
+    A[Start: Calculate Taylor Rate] --> B{Fed Rate > Taylor Rate?}
+    B -- Yes --> C[Signal: Restrictive Policy]
+    C --> D[Risk: Recession / Slowdown]
+    B -- No --> E[Signal: Accommodative Policy]
+    E --> F[Risk: Inflation Overheating]
+    style C fill:#de414a,stroke:#333
+    style E fill:#43965d,stroke:#333
+```
 
 
 ## 2.2 Metric: Real Interest Rate
@@ -285,7 +304,14 @@ Perform a "health check" on the underlying economy beyond stock prices to detect
 * **Triggered (> 0.5%):** Historically marks the early stage of a recession with high accuracy.
 * **Rapid Rise:** Indicates a deteriorating labor market where momentum is shifting toward job losses.
 
-
+```mermaid
+graph LR
+    A[Unemployment Rate] --> B(Calculate 3-Month Moving Avg)
+    B --> C{Rising > 0.5% vs 12M Low?}
+    C -- Yes --> D[🔴 ALERT: Recession Started]
+    C -- No --> E[🟢 Status: Expansion]
+    style D fill:#ff0000,color:#fff
+```
 
 ## 3.2 Leading Economic Indicators (LEI) Analysis
 **Logic:** Uses a specific set of metrics that tend to change direction *before* the overall economy does.
@@ -437,9 +463,20 @@ python src/etl_script.py
 *Output: Processed CSV files will be generated in the `data/` directory.*
 
 ### 3. Power BI Setup
-1.  Open the Power BI file: `dashboard/Global_Macro.pbix`.
-2.  Go to **Home** > **Transform Data** > **Data Source Settings**.
-3.  Change the file path source to point to your local `data/` folder **OR** point to the **GitHub Raw URL** of the CSV files if you want to enable remote auto-updates without local file dependencies.
-4.  Click **Refresh** to load the latest data processed by the Python script.
+🚀 Instant Start (No Setup Required) You do not need to download the CSV files or run the Python script to view the dashboard.
 
+Download Global_Macro.pbix from the dashboard/ folder.
 
+Open it in Power BI Desktop.
+
+Click "Refresh". The dashboard is pre-wired to fetch the latest processed data directly from this GitHub Repository via Web URL.
+
+---
+
+### Future Roadmap
+
+#### Crypto Liquidity Integration: Adding Bitcoin (BTC) metrics as a real-time proxy for global excess liquidity and risk appetite.
+
+#### Machine Learning Forecasting: Implementing Prophet or LSTM models to provide 6-month forward-looking trend projections for CPI and Unemployment.
+
+#### Scenario Analysis: Adding "What-If" parameters to simulate Fed Rate cuts and their impact on valuation models.
